@@ -1,1 +1,1 @@
-# BSC
+# Blurred Scene Classifier (BSC) # DK
