@@ -13,12 +13,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def train_model(model, input_dir):
-    dataloader = torch.utils.data.DataLoader(MyDataset(input_dir=input_dir), batch_size=8, shuffle=True, num_workers=4)
+    dataloader = torch.utils.data.DataLoader(MyDataset(input_dir=input_dir), batch_size=32, shuffle=True, num_workers=8)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
-    model = model.to(device)
-    for epoch in range(1000):
-        print('Epoch {}/{}'.format(epoch, 100 - 1))
+    model = torch.nn.DataParallel(model)
+    model.to(device)
+    # model = model.to(device)
+    for epoch in range(20):
+        print('Epoch {}/{}'.format(epoch, 20 - 1))
         print('-' * 10)
 
         for phase in ['train', 'val']:
@@ -59,4 +61,5 @@ if __name__ == "__main__":
     network = Classifier()
     # model.load_state_dict(torch.load('weights/classifier.pth'))
     # model.eval()
-    train_model(network, input_dir="results")
+    model = train_model(network, input_dir="results")
+    torch.save(model.state_dict(), 'weights/classifier.pth')

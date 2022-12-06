@@ -8,7 +8,7 @@ class BlurGenerator:
     def __init__(self, input_img):
         self.input_img = input_img
 
-    def gaussian_blur(self, kernel_size=5, sigma=1.5):
+    def gaussian_blur(self, kernel_size=7, sigma=20):
         img = cv2.imread(self.input_img)
         blur = cv2.GaussianBlur(img, (kernel_size, kernel_size), sigma)
         # cv2.imwrite(os.path.join(self.output_dir, 'gaussian_blur.jpg'), blur)
@@ -31,7 +31,7 @@ class BlurGenerator:
 
     def make_blur(self):
         ratio = np.random.uniform()
-        if ratio < 0.5:
+        if ratio < 0.9:
             return self.gaussian_blur()
         else:
             return self.motion_blur()
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     if mode == "frames":
         extract_frames(input_video, output_dir)
     elif mode == "blur":
-        img_dir = glob.glob(os.path.join(output_dir, "clear", "*.jpg"))
+        img_dir = glob.glob(os.path.join(output_dir, "blur", "*"))
         output_dir = os.path.join(output_dir, "blur")
         for img in img_dir:
             blur_generator = BlurGenerator(img)

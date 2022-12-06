@@ -15,8 +15,11 @@ class Classifier(nn.Module):
         # self.fc1 = nn.Linear(16 * 5 * 5, 120)
         # self.fc2 = nn.Linear(120, 84)
         # self.fc3 = nn.Linear(84, 10)
-        self.net = torchvision.models.resnet18(pretrained=True)
-        self.net.fc = nn.Linear(512, 2)
+        # self.net = torchvision.models.resnet18(pretrained=True)
+        self.net = torchvision.models.resnet50(pretrained=False)
+        self.net.fc = nn.Linear(2048, 2)
+        # self.sigmoid = nn.Sigmoid()
+        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         # x = self.pool(F.relu(self.conv1(x)))
@@ -26,5 +29,6 @@ class Classifier(nn.Module):
         # x = F.relu(self.fc2(x))
         # x = self.fc3(x)
         x = self.net(x)
-
+        # x = self.sigmoid(x)
+        # x = self.softmax(x)
         return x
