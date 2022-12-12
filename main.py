@@ -22,9 +22,9 @@ def main(input_video, output_dir, model_path):
         if ret:
             frame = cv2.resize(frame, (224, 224))
             frame = torch.from_numpy(frame).permute(2, 0, 1).unsqueeze(0).float().to(device)
-            output = classifier(frame)
-
+            output = classifier(frame).softmax(dim=1)
             print(output)
+            # print(output[0][0].item())
             # prediction = torch.max(output, 1)[1]
             # print(prediction)
         else:
@@ -33,5 +33,5 @@ def main(input_video, output_dir, model_path):
     return output
 
 if __name__ == "__main__":
-    prediction = main("/home/dk/BSC/221201/01_Full/221117_01.mp4", "data", "weights/classifier.pth")
+    prediction = main("/home/dk/BSC/221201/01_Full/221125_07.mov", "data", "weights/CRETH_classifier_70.pth")
 

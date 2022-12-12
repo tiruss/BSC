@@ -12,16 +12,19 @@ import numpy as np
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def train_model(model, input_dir):
-    dataloader = torch.utils.data.DataLoader(MyDataset(input_dir=input_dir), batch_size=32, shuffle=True, num_workers=8)
+def train_model(model, input_dir, epochs = 200):
+    dataloader = torch.utils.data.DataLoader(MyDataset(input_dir=input_dir), batch_size=32, shuffle=True, num_workers=16)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
     model = torch.nn.DataParallel(model)
     model.to(device)
     # model = model.to(device)
-    for epoch in range(20):
-        print('Epoch {}/{}'.format(epoch, 20 - 1))
+    for epoch in range(epochs):
+        print('Epoch {}/{}'.format(epoch, epochs - 1))
         print('-' * 10)
+
+        if epoch != 0 and epoch % 10 == 0:
+            torch.save(model.state_dict(), "weights/CRETH_classifier_{}.pth".format(epoch))
 
         for phase in ['train', 'val']:
             if phase == 'train':
@@ -61,5 +64,5 @@ if __name__ == "__main__":
     network = Classifier()
     # model.load_state_dict(torch.load('weights/classifier.pth'))
     # model.eval()
-    model = train_model(network, input_dir="results")
-    torch.save(model.state_dict(), 'weights/classifier.pth')
+    model = train_model(network, input_dir="CRETH")
+    torch.save(model.state_dict(), 'weights/CRETH_classifier_final.pth')
